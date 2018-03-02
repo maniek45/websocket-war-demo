@@ -6,23 +6,41 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import javax.servlet.http.HttpSession;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class DemoApplicationTests {
 
-	@Autowired
-	private MockMvc mvc;
+    @Autowired
+    private MockMvc mvc;
 
-	@Test
-	public void shouldReturnHelloWorld() throws Exception {
-		this.mvc.perform(get("/Marcin").accept(MediaType.TEXT_PLAIN))
-				.andExpect(status().isOk()).andExpect(content().string("Hello Marcin"));
-	}
+    @Test
+    public void shouldLoginWithValidCredentials() throws Exception {
+        this.mvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"user\": \"user\", \"password\": \"password\" }"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldReturnHelloWorld() throws Exception {
+        HttpSession session = this.mvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"user\": \"user\", \"password\": \"password\" }"))
+                .andExpect(status().isOk())
+                .andReturn().getRequest().getSession();
+
+        this.mvc.perform(get("/Marcin").session((MockHttpSession) session))
+                .andExpect(status().isOk()).andExpect(content().string("Hello Marcin"));
+    }
 
 }
