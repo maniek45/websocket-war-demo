@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,13 +34,24 @@ public class DemoApplicationTests {
     }
 
     @Test
+    public void shouldLogoutAfterLogin() throws Exception {
+        HttpSession session = this.mvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"user\": \"user\", \"password\": \"password\" }"))
+                .andExpect(status().isOk())
+                .andReturn().getRequest().getSession();
+
+        this.mvc.perform(put("/logout").session((MockHttpSession) session))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
     public void shouldReturnHelloWorld() throws Exception {
         HttpSession session = this.mvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON)
                 .content("{ \"user\": \"user\", \"password\": \"password\" }"))
                 .andExpect(status().isOk())
                 .andReturn().getRequest().getSession();
 
-        this.mvc.perform(get("/Marcin").session((MockHttpSession) session))
+        this.mvc.perform(get("/rest/Marcin").session((MockHttpSession) session))
                 .andExpect(status().isOk()).andExpect(content().string("Hello Marcin"));
     }
 

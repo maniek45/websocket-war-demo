@@ -21,7 +21,7 @@ public class DemoApplication {
     @RestController
     class HelloController {
 
-        @GetMapping("/{name}")
+        @GetMapping("/rest/{name}")
         String helloWorld(@PathVariable("name") String name) {
             return "Hello " + name;
         }
@@ -36,6 +36,12 @@ public class DemoApplication {
                 throws ServletException {
             httpServletRequest.login(authEntity.user, authEntity.password);
             return ResponseEntity.ok().build();
+        }
+
+        @PutMapping(value = "/logout")
+        ResponseEntity<?> logout(HttpServletRequest httpServletRequest) throws ServletException {
+            httpServletRequest.logout();
+            return ResponseEntity.noContent().build();
         }
     }
 

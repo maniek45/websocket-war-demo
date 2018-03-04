@@ -12,12 +12,12 @@ public class TextMessageHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        logger.info("websocket connection established: {}", session.getRemoteAddress());
+        logger.info("websocket connection established: {} ({})", session.getRemoteAddress(), session.getPrincipal());
     }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        logger.info("websocket received text message: {}", message.getPayload());
+        logger.info("websocket received text message: {} ({})", message.getPayload(), session.getPrincipal());
         session.sendMessage(new TextMessage(message.getPayload()));
     }
 }
