@@ -22,16 +22,11 @@ repositories {
     mavenCentral()
 }
 
-configurations {
-//    providedRuntime
-//    providedCompile
-}
-
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-websocket')
     compile('org.springframework.boot:spring-boot-starter-security')
-    //providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+    providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
     providedCompile('org.hibernate:hibernate-validator')
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('org.springframework.security:spring-security-test')
